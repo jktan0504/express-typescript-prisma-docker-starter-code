@@ -23,65 +23,71 @@ import expressPinoLogger from "express-pino-logger";
 import { Logger } from '../../core/utils/logger';
 import { PINO_LOGGER, PinoLogger } from '../../core/services/logger/pino-logger';
 
-
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger/swagger-output.json';
 
-const app: Express = express();
+export class APIServer {
+	
+	public static runServer = async (): Promise<void> => {
 
-// map port
-const port =
-    (Number(process.env.WMC_BACKOFFICE_API_PORT) as unknown as number) || 8080;
+		const app: Express = express();
 
-// handle and manage cross-origin calls
-app.use(
-    cors({
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-    }),
-);
+		// map port
+		const port =
+			(Number(process.env.WMC_BACKOFFICE_API_PORT) as unknown as number) || 8080;
 
-// support json encoded bodies
-app.use(express.json());
+		// handle and manage cross-origin calls
+		app.use(
+			cors({
+				origin: '*',
+				methods: ['GET', 'POST', 'PUT', 'DELETE'],
+				allowedHeaders: ['Content-Type', 'Authorization'],
+			}),
+		);
 
-app.use(express.urlencoded({ extended: true })); // support encoded bodies
+		// support json encoded bodies
+		app.use(express.json());
 
-// Support Multipart/form-data Middleware
-app.use(fileupload());
+		app.use(express.urlencoded({ extended: true })); // support encoded bodies
 
-// Error Handler
-app.use(ErrorHandler);
+		// Support Multipart/form-data Middleware
+		app.use(fileupload());
 
-// Logger
-app.use(expressPinoLogger({ logger: PINO_LOGGER.logger }));
+		// Error Handler
+		app.use(ErrorHandler);
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore: Unreachable code error
-BigInt.prototype.toJSON = function (): number {
-    return Number(this.toString());
-};
+		// Logger
+		app.use(expressPinoLogger({ logger: PINO_LOGGER.logger }));
 
-// handle routes
-app.use('/healthcheck', async (_request: Request, response: Response) => {
-    response.status(200).json({ message: 'Hello Server' });
-});
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore: Unreachable code error
+		BigInt.prototype.toJSON = function (): number {
+			return Number(this.toString());
+		};
 
-// Import Routes
-app.use('/api/v1/', routes);
+		// handle routes
+		app.use('/healthcheck', async (_request: Request, response: Response) => {
+			response.status(200).json({ message: 'Hello Server' });
+		});
 
-// TODO: Swagger
-// app.use(
-//     '/docs',
-//     swaggerUi.serve,
-//     swaggerUi.setup(swaggerDocument, {
-//         swaggerOptions: { persistAuthorization: true },
-//     }),
-// );
+		// Import Routes
+		app.use('/api/v1/', routes);
 
-app.listen(port, () => {
-    console.log(`[Server]: API is running at http://localhost:${port}`);
-    console.log(
-        `[Server]: Swagger is running at http://localhost:${port}/docs`,
-    );
-});
+		// TODO: Swagger
+		// app.use(
+		//     '/docs',
+		//     swaggerUi.serve,
+		//     swaggerUi.setup(swaggerDocument, {
+		//         swaggerOptions: { persistAuthorization: true },
+		//     }),
+		// );
+
+		app.listen(port, () => {
+			console.log(`[Server]: API is running at http://localhost:${port}`);
+			console.log(
+				`[Server]: Swagger is running at http://localhost:${port}/docs`,
+			);
+		});
+
+	}
+}

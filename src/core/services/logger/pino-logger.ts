@@ -2,8 +2,8 @@
 import { NextFunction, Request, Response } from 'express';
 import pino, { Level, Logger as PinoLoggerType, TransportTargetOptions } from 'pino';
 import pinoHttp from 'pino-http';
+import pinoPretty from 'pino-pretty';
 import { LoggerDomainService } from './logger.service';
-
 
 enum LogLevel {
   DEBUG = 'debug',
@@ -130,6 +130,9 @@ class PinoLogger implements LoggerDomainService {
       }
     };
 
+
+
+
     const pinoPrettyTarget = {
       level: LogLevel.DEBUG,
       target: 'pino-pretty',
@@ -142,13 +145,15 @@ class PinoLogger implements LoggerDomainService {
       options: { destination: 1, append: true }
     };
 
+	const isDevelopment = process.env.NODE_ENV === "development";
+
     const targets: TransportTargetOptions[] = [
       ...( process.env.NODE_ENV === "test" ? [] : [errorRotateFileTarget, rotateFileTarget]),
-      process.env.NODE_ENV === "development" ? pinoPrettyTarget : standardOutputTarget
+	  isDevelopment ? { level: LogLevel.DEBUG, target: 'pino-pretty', options: { colorize: true, levelFirst: true, translateTime: 'SYS:standard', ignore: 'pid,hostname' } } : standardOutputTarget
     ];
 
     return pino(
-      {
+      { 
         enabled: !(process.env.NODE_ENV === "test") && process.env.LOGS_ENABLED === "true",
         level: PinoLoggerConfig.LOG_LEVEL,
         messageKey: 'message'

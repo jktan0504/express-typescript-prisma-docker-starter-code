@@ -10,4 +10,11 @@
  *
  * @last_update: 30 April 2024
  */
-import './presentations/rest/server';
+import { APIServer } from './presentations/rest/server';
+
+export const main = async (): Promise<void> => {
+	await APIServer.runServer();
+}
+
+// Execute main function
+main();

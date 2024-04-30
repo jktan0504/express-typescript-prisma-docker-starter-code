@@ -4,7 +4,7 @@
     "description": "EzChat Appliation Backend API Services",
     "main": "index.ts",
     "scripts": {
-        "dev": "env-cmd --file .env.development ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts | pino-pretty",
+        "dev": "env-cmd --file .env.development ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts | npx pino-pretty",
         "test": "env-cmd --file .env.test jest --silent --runInBand --detectOpenHandles --passWithNoTests",
         "test:watch": "env-cmd --file .env.test jest --watch",
         "build": "npx tsc",
