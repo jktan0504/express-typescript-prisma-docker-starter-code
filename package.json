@@ -4,7 +4,7 @@
     "description": "EzChat Appliation Backend API Services",
     "main": "index.ts",
     "scripts": {
-        "dev": "env-cmd --file .env.development ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts",
+        "dev": "env-cmd --file .env.development ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts | pino-pretty",
         "test": "env-cmd --file .env.test jest --silent --runInBand --detectOpenHandles --passWithNoTests",
         "test:watch": "env-cmd --file .env.test jest --watch",
         "build": "npx tsc",
@@ -79,6 +79,7 @@
         "express-async-errors": "^3.1.1",
         "express-fileupload": "^1.5.0",
         "fast-equals": "^5.0.1",
+        "file-stream-rotator": "^1.0.0",
         "http-status-codes": "^2.3.0",
         "inversify": "^6.0.2",
         "joi": "^17.13.0",
