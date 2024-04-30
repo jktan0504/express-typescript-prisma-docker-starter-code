@@ -1,11 +1,27 @@
-import 'express-async-errors';
+/**
+ * server.ts
+ *
+ * Express Server Rest API
+ * Interacts with express middleware, routes, handlers,
+ * usecase(application & services)
+ *
+ * @author JKDEVELOPER
+ * @nickname JK
+ * @email jktan0504@hotmail.com
+ *
+ * @last_update: 30 April 2024
+ */
+
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import fileupload from 'express-fileupload';
+import { ErrorHandler } from './core/handlers/error-handler';
+import 'express-async-errors';
+import 'reflect-metadata';
+import { routes } from './router/router';
 // import { routes } from './common/routes.index';
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger/swagger-output.json';
-// import { errorHandler } from './common/exceptions/error-handler';
 
 const app: Express = express();
 
@@ -27,7 +43,11 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
 
+// Support Multipart/form-data Middleware
 app.use(fileupload());
+
+// Error Handler
+app.use(ErrorHandler);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unreachable code error
@@ -40,8 +60,10 @@ app.use('/healthcheck', async (_request: Request, response: Response) => {
     response.status(200).json({ message: 'Hello Server' });
 });
 
-// app.use('/api/v1/', routes);
+// Import Routes
+app.use('/api/v1/', routes);
 
+// TODO: Swagger
 // app.use(
 //     '/docs',
 //     swaggerUi.serve,
@@ -49,8 +71,6 @@ app.use('/healthcheck', async (_request: Request, response: Response) => {
 //         swaggerOptions: { persistAuthorization: true },
 //     }),
 // );
-
-// app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`[Server]: API is running at http://localhost:${port}`);
