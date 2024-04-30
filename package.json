@@ -3,6 +3,18 @@
     "version": "1.0.0",
     "description": "EzChat Appliation Backend API Services",
     "main": "index.ts",
+	"keywords": [
+        "ezchat",
+        "typescript",
+        "docker",
+        "waha"
+    ],
+    "author": {
+		"name": "JK",
+		"email": "jktan0504@hotmail.com",
+		"url": "http://jkdeveloper.com"
+	}, 
+    "license": "ISC",
     "scripts": {
         "dev": "env-cmd --file .env.development ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts | npx pino-pretty",
         "test": "env-cmd --file .env.test jest --silent --runInBand --detectOpenHandles --passWithNoTests",
@@ -14,6 +26,12 @@
         "knex:migrate:latest": "env-cmd --file .env.development knex --knexfile src/database/knexfile.ts migrate:latest",
         "knex:migrate:rollback": "env-cmd --file .env.development npm run knex migrate:rollback",
         "knex:seed": "env-cmd --file .env.development knex --knexfile src/database/knexfile.ts seed:run",
+		"prisma:generate:watch": "prisma generate --watch",
+		"prisma:migrate": "prisma migrate dev --skip-seed",
+		"prisma:seed": "prisma db seed",
+		"prisma:reset": "prisma migrate reset",
+		"prisma:studio": "prisma studio",
+		"prisma:format": "prisma format",
         "prisma:dev:sync": "env-cmd --file .env.development prisma db pull && prisma generate && prisma format",
         "prisma:prod:sync": "env-cmd --file .env.production prisma db pull && prisma generate && prisma format",
         "prettier-format": "prettier --config .prettierrc.json 'src/**/*.ts' --write",
@@ -24,14 +42,6 @@
         "start:cron-dev": "env-cmd --file .env.development ts-node src/cron/index.ts",
         "start:cron-prod": "env-cmd --file .env.production ts-node src/cron/index.ts"
     },
-    "keywords": [
-        "ezchat",
-        "typescript",
-        "docker",
-        "waha"
-    ],
-    "author": "jktan0504@hotmail.com",
-    "license": "ISC",
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",
         "@swc/cli": "^0.3.12",
