@@ -40,7 +40,17 @@
         "lint": "npx eslint .",
         "swagger": "ts-node src/swagger/swagger.ts",
         "start:cron-dev": "env-cmd --file .env.development ts-node src/cron/index.ts",
-        "start:cron-prod": "env-cmd --file .env.production ts-node src/cron/index.ts"
+        "start:cron-prod": "env-cmd --file .env.production ts-node src/cron/index.ts",
+		"staging:db:migrate": "env-cmd --file .env.staging npx knex --knexfile src/database/knexfile.ts migrate:latest",
+        "staging:db:seed": "env-cmd --file .env.staging npx knex --knexfile src/database/knexfile.ts seed:run",
+        "staging:build": "npx env-cmd --file .env.staging rimraf build && swc ./src -d build",
+        "staging:build:cp": "npx env-cmd --file .env.staging rimraf build && swc ./src -d build && cp -r ./src/database/certs ./build/src/database/certs && cp ./src/swagger/swagger-output.json ./build/src/swagger/swagger-output.json",
+        "staging": "npx env-cmd --file ../.env.staging nodemon src/server.ts",
+        "staging:swagger": "npx concurrently \"nodemon\" \"nodemon -x tsoa spec\"",
+        "staging:prisma:generate": "env-cmd --file .env.staging npx prisma generate",
+        "staging:start": "env-cmd --file ./.env.staging node build/src/server.js",
+        "staging:start:docker:build": "env-cmd --file .env.staging npm run staging:build && node --inspect=0.0.0.0 build/src/server.js",
+        "staging:start:docker": "env-cmd --file .env.staging node --inspect=0.0.0.0 build/src/server.js"
     },
     "devDependencies": {
         "@faker-js/faker": "^8.4.1",
