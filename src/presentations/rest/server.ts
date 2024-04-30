@@ -19,7 +19,11 @@ import { ErrorHandler } from './core/handlers/error-handler';
 import 'express-async-errors';
 import 'reflect-metadata';
 import { routes } from './router/router';
-// import { routes } from './common/routes.index';
+import expressPinoLogger from "express-pino-logger";
+import { Logger } from '../../core/utils/logger';
+import { PINO_LOGGER, PinoLogger } from '../../core/services/logger/pino-logger';
+
+// TODO: Swagger
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger/swagger-output.json';
 
@@ -48,6 +52,9 @@ app.use(fileupload());
 
 // Error Handler
 app.use(ErrorHandler);
+
+// Logger
+// app.use(expressPinoLogger({ logger: PINO_LOGGER }));
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unreachable code error

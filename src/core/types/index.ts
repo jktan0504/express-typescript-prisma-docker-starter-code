@@ -1,1 +1,1 @@
-export * from './knex-types';
+export * from './knex.types';
