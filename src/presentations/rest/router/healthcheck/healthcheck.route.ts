@@ -6,12 +6,14 @@ import { HealthCheckController } from '../../controllers/healthcheck/healthcheck
 
 const container = new Container();
 container.bind(INTERCEPTOR_TYPES.HEALTHCHECK_USECASE).to(HealthCheckUsecase);
-container.bind(INTERCEPTOR_TYPES.HEALTHCHECK_CONTROLLER).to(HealthCheckController);
+container
+    .bind(INTERCEPTOR_TYPES.HEALTHCHECK_CONTROLLER)
+    .to(HealthCheckController);
 
 export const healthCheckRoutes: Router = Router();
 
 const controller = container.get<HealthCheckController>(
-	INTERCEPTOR_TYPES.HEALTHCHECK_CONTROLLER
+    INTERCEPTOR_TYPES.HEALTHCHECK_CONTROLLER,
 );
 
 healthCheckRoutes.get(

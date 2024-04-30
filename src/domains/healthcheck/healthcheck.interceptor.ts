@@ -1,6 +1,5 @@
-import { IHealthCheckDto, IHealthCheckResponse } from "./healthcheck.interface";
+import { IHealthCheckDto, IHealthCheckResponse } from './healthcheck.interface';
 
 export interface IHeathcheckUsecase {
-	onGetHealthCheck(input: IHealthCheckDto): Promise<IHealthCheckResponse> ;
+    onGetHealthCheck(input: IHealthCheckDto): Promise<IHealthCheckResponse>;
 }
-  

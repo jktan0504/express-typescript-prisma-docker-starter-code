@@ -13,8 +13,8 @@
 import { APIServer } from './presentations/rest/server';
 
 export const main = async (): Promise<void> => {
-	await APIServer.runServer();
-}
+    await APIServer.runServer();
+};
 
 // Execute main function
 main();

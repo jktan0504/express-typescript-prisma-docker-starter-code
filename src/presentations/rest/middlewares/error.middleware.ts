@@ -1,7 +1,19 @@
+/**
+ * src/presentations/rest/middlewares/error.middlewares.ts
+ *
+ * Error Middlewares
+ * Error handling for every API Routes
+ *
+ * @author JKDEVELOPER
+ * @nickname JK
+ * @email jktan0504@hotmail.com
+ *
+ * @last_update: 30 April 2024
+ */
 import { NextFunction, Request, Response } from 'express';
-import { DomainException } from '../../../../domains/core/exceptions/domain.exception';
+import { DomainException } from '../../../domains/core/exceptions/domain.exception';
 
-export function ErrorHandler(
+export function ErrorMiddleware(
     err: DomainException,
     req: Request,
     res: Response,

@@ -21,7 +21,7 @@ class HealthStatus extends DomainEntity {
         return new HealthStatus(status, message, appVersion);
     }
 
-	public toDTO(): IHealthCheckDto {
+    public toDTO(): IHealthCheckDto {
         return {
             name: 'Health Check', // You can customize this name
             status: this.status,

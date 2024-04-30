@@ -1,4 +1,4 @@
-import { IErrorResponse } from "../interfaces/error-response.interface";
+import { IErrorResponse } from '../interfaces/error-response.interface';
 
 abstract class DomainException extends Error {
     readonly statusCode: number;
