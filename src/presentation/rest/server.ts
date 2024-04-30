@@ -6,7 +6,6 @@ import fileupload from 'express-fileupload';
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger/swagger-output.json';
 // import { errorHandler } from './common/exceptions/error-handler';
-import fileupload from 'express-fileupload';
 
 const app: Express = express();
 
@@ -41,17 +40,17 @@ app.use('/healthcheck', async (_request: Request, response: Response) => {
     response.status(200).json({ message: 'Hello Server' });
 });
 
-app.use('/api/v1/', routes);
+// app.use('/api/v1/', routes);
 
-app.use(
-    '/docs',
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, {
-        swaggerOptions: { persistAuthorization: true },
-    }),
-);
+// app.use(
+//     '/docs',
+//     swaggerUi.serve,
+//     swaggerUi.setup(swaggerDocument, {
+//         swaggerOptions: { persistAuthorization: true },
+//     }),
+// );
 
-app.use(errorHandler);
+// app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`[Server]: API is running at http://localhost:${port}`);

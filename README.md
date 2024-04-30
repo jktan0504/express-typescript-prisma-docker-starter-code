@@ -38,6 +38,7 @@ The main goal of this project is to provide a base template for the generation o
 > This repository is a representation of Clean Architecture practical implementation in Node.JS. We have two videos that is explain the core concept of Clean Architecture and how it solves the problem that we facing in traditional approach while building a backend service.
 
 ## 🥷🏻 Author
-- JKDeveloper
-- Email: jktan0504@hotmail.com
-- GitHub: jktan0504
+
+-   JKDeveloper
+-   Email: jktan0504@hotmail.com
+-   GitHub: jktan0504
