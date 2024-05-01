@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import configs from '../database/knexfile';
+import configs from './knexfile';
 import Knex from 'knex';
 import { attachPaginate } from 'knex-paginate';
 
