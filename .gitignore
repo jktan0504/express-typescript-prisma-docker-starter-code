@@ -148,5 +148,3 @@ build/
 ### Swagger ###
 src/swagger/swagger-output.json
 # End
-
-Makefile
