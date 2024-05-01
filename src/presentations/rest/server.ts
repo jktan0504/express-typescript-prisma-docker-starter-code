@@ -13,6 +13,7 @@
  */
 
 import express, { Express, Request, Response } from 'express';
+import http from 'http';
 import cors from 'cors';
 import fileupload from 'express-fileupload';
 
@@ -33,6 +34,9 @@ import { ErrorMiddleware } from './middlewares';
 export class APIServer {
     public static runServer = async (): Promise<void> => {
         const app: Express = express();
+
+		// Create an HTTP server
+		const server = http.createServer(app);
 
         // map port
         const port =
@@ -87,7 +91,22 @@ export class APIServer {
         //     }),
         // );
 
-        app.listen(port, () => {
+		// TODO: Websocket
+		// Create a WebSocket server
+		// const wss = new WebSocketServer({ server });
+
+		// wss.on('connection', (ws) => {
+		//   // Connection is up, let's add a simple event
+		//   ws.on('message', (message) => {
+		// 	// Log the received message
+		// 	console.log('received: %s', message);
+		//   });
+	
+		//   // Send a message
+		//   ws.send('Hello! You are connected to the WebSocket server.');
+		// });
+
+        server.listen(port, () => {
             console.log(`[Server]: API is running at http://localhost:${port}`);
             console.log(
                 `[Server]: Swagger is running at http://localhost:${port}/docs`,
