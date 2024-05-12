@@ -10,10 +10,16 @@
  *
  * @last_update: 30 April 2024
  */
+
 import express from 'express';
+
 // ** Routes
 import { healthCheckRoutes } from './healthcheck/healthcheck.route';
+import { currencyRoutes } from './countries/currency/currency.routes';
 
 export const routes = express.Router();
 
-routes.use([healthCheckRoutes]);
+routes.use([
+	healthCheckRoutes,
+	currencyRoutes
+]);

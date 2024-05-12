@@ -1,10 +1,74 @@
-// MISC
-
-Table autocomplete_countries {
-  id bigserial
-  label varchar
+/**
+*
+* ERD of EzChat Platform
+* 
+* Developed & Designed by: jktan0504@hotmail.com
+* Last Updated at: 30 April 2024
+*
+**/
+Project project_name {
+  database_type: 'PostgreSQL'
+  Note: 'ERD of EzChat Platform'
 }
 
+/**
+* Queue
+**/
+enum queue_statuses {
+  "pending"
+  "completed"
+  "failed"
+}
+// Queue Jobs
+Table queue_jobs {
+  id bigserial [pk, increment]
+  job_type varchar [not null, note: "type name"]
+  job_data text [null, note: "queue name"]
+  action varchar(150) [not null, note: "action name"]
+  body jsonb [null, note: "queue message"]
+  status queue_statuses [note: "queue status", default: "pending"]
+  remark text [null, note: "just for some reminder"]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+/**
+* Media & Files
+**/
+// Medias
+Table medias {
+  id UUID [pk, unique]
+  name varchar [null]
+  description text [null]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+// Files
+Table media_files {
+  id UUID [pk, unique]
+  media_id UUID [ref: > medias.id]
+  resolution varchar [null, note: "resolution of this media file, 1920px"]
+  file_key varchar [null, note: "file key for s3"]
+  file_type varchar(150) [null, note: "image/png, ..."]
+  url text [null, note: "s3 link"]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+/**
+* COUNTRY & CURRENCY
+**/
+// Countries
 Table countries {
   id bigserial
   name varchar
@@ -13,747 +77,396 @@ Table countries {
   activated boolean
   created_at timestamp
   updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
   currency_id bigserial [ref: > currencies.id]
 }
 
+// Currencies
 Table currencies {
   id bigserial
   name varchar
   code varchar
+  symbol varchar
   activated boolean
   created_at timestamp
   updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
 }
 
+/**
+* Role ACESS - RBAC
+**/
+// Roles
 Table roles {
-  id bigserial
-  activated boolean
-  name varchar
-  description varchar
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
+  id bigserial [pk, increment]
+  name varchar(100) [unique, not null, note: "role name"]
+  description text [null]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
 }
 
-Table system_users {
-  id bigserial
-  full_name varchar
-  contact_number varchar
-  email varchar
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
+// Permissions
+Table permissions {
+  id bigserial [pk, increment]
+  name varchar(255) [unique, not null, note: "permission / module name"]
+  description text [null]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+// RBAC
+Table rbac {
   role_id bigserial [ref: > roles.id]
-  company_id bigserial [ref: > companies.id]
+  permission_id bigserial [ref: > permissions.id]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+
+  Indexes {
+    (role_id, permission_id) [unique]
+  }
 }
 
-Table companies {
-  id bigserial
-  name varchar
-  registration_number float
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
+/**
+* SSO
+**/
+Table sso_auth_providers {
+  id bigserial [pk, increment]
+  name varchar(100) [not null, unique]
+  client_id text [not null]
+  client_secret text [not null]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
 }
 
-// PRODUCT
-Table products {
-  id bigserial
-  name varchar
-  description varchar
-  stock_quantity float
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  sku_id bigserial [ref: > products_skus.id]
-  category_id bigserial [ref: > products_categories.id]
+/**
+* User
+**/
+// User Information
+enum Gender {
+  "male"
+  "female"
 }
 
-Table products_skus {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
+// User informations
+Table user_infos {
+  id UUID [pk, unique]
+  nickname varchar(255) [null, note: "display purpose only"]
+  email varchar(100) [null]
+  first_name varchar(255) [null]
+  last_name varchar(255) [null]
+  contact_number varchar(150) [null, unique]
+  age integer [default: 0, note: "age"]
+  gender Gender [default: 'male']
+  ic_number varchar(100) [null, unique]
+  birthdate date [null]
+  avatar_id UUID [null, ref: > medias.id]
+  country_id bigserial [null, ref: > countries.id]
+  social_telegram text [null, note: "connect to telegram"]
+  social_facebook text [null, note: "connect to facebook"]
+  social_instagram text [null, note: "connect to instagram"]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
 }
 
-Table products_categories {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table employee_position {
-  id bigserial
-  name varchar
-  type varchar(50)
-  description varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table employees_wages {
-  id bigserial
-  name varchar
-  description varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table employees {
-  id bigserial
-  full_name varchar
-  email varchar
-  ic_number float
-  contact_number float
-  bank_name varchar
-  bank_account_holder_name varchar
-  account_number float
-  wage_amount float
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  company_id bigserial [ref: > companies.id]
-  country_id bigserial [ref: > countries.id]
-  employee_position_id bigserial [ref: > employee_position.id]
-  employee_wage_id bigserial [ref: > employees_wages.id]
-}
-
-Table part_timers_templates {
-  id bigserial
-  content varchar
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table part_timers_jobs_categories {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table part_timers_jobs {
-  id bigserial
-  name varchar
-  description varchar
-  expiry_date datetime
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  employee_id bigserial [ref: > employees.id]
-  category_id bigserial [ref: > part_timers_jobs_categories.id]
-}
-
-Table part_timers_payouts {
-  id bigserial
-  name varchar
-  job_date datetime
-  job_started_at datetime
-  job_ended_at datetime
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  employee_id bigserial [ref: > employees.id]
-}
-
-// Course Module
-
-Table courses_categories {
-  id bigserial
-  name varchar
-  description varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table courses {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  course_category_id bigserial [ref: > courses_categories.id]
-}
-
-Table programs {
-  id bigserial
-  name varchar
-  code varchar
-  fee double
-  merchandise boolean
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  course_id bigserial [ref: > courses.id]
-  company_id bigserial [ref: > companies.id]
-  currency_id bigserial [ref: > currencies.id]
-  country_id bigserial [ref: > countries.id]
-  speaker_id bigserial [ref: > employees.id]
-}
-
-Table classes {
-  id bigserial
-  name varchar
-  code varchar
-  workshop_start_datetime timestamp
-  workshop_end_datetime timestamp
-  class_days_count float
-  certificate_provided boolean
-  sales_offer varchar
-  split_commission float
-  senangpay_transaction_fee float
-  billplz_transaction_fee float
-  paypal_transaction_fee float
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  program_id bigserial [ref: > programs.id]
-  speaker_id bigserial [ref: > employees.id]
-}
-
+// Contact Books
 Table contacts {
-  id bigserial
-  full_name varchar
-  prefer_name varchar
-  contact_number varchar
-  ref_number varchar
-  personal_id varchar 
-  email varchar
-  payment_email varchar
-  address varchar
-  remark text
+  id UUID [pk, unique]
+  user_info_id UUID [not null, unique, ref: - user_infos.id]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+// Users
+Table users {
+  id UUID [pk, unique]
+  username varchar(255) [not null, unique, note: "own unique username"]
+  password text [not null]
+  user_info_id UUID [not null, unique, ref: - user_infos.id]
+  role_id bigserial [null, ref: > roles.id]
+  sso_auth_provider_id bigserial [null, ref: > sso_auth_providers.id]
+  sso_token varchar(255) [null, unique]
+  device_id varchar(255) [null, unique]
+  is_email_verified boolean [default: false]
+  email_verified_at varchar [null]
+  is_pruned boolean [default: false]
+  activated boolean [default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+/**
+* AUTHENTICATION
+**/
+// Password Reset
+Table password_reset_tokens {
+  id bigserial [pk, increment]
+  email varchar(255) [not null]
+  token text [not null, note: "reset password token"]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+// Verify OTP
+Table verify_otps {
+  id bigserial [pk, increment]
+  email varchar(255) [not null]
+  otp text [not null, note: "otp number"]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by_id UUID [null, ref: > users.id]
+  updated_by_id UUID [null, ref: > users.id]
+}
+
+/**
+* SUBSCRIPTION PLANS
+**/
+// Subscription Plans
+Table subscription_plans {
+  id bigserial [pk, increment]
+  name varchar [not null, unique, note: 'subscription plan name']
+  description text [note: 'subscription plan description']
+  fee double(10,2) [default: 0, note: 'subscription fee']
+  duration integer [default: 0, note: 'duration by month, e.g. 1 = 1 month, 12 = 12 months']
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+
+/**
+* COMPANY
+**/
+// Company categories
+Table company_categories {
+  id bigserial [pk, increment]
+  name varchar
+  icon_id UUID [null, ref: > medias.id]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Companies
+Table companies {
+  id UUID [pk, unique]
+  name varchar
+  registration_number varchar
+  company_category_id bigserial [null, ref: > company_categories.id]
+  logo_id UUID [null, ref: > medias.id]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+/**
+* MERCHANT
+**/
+// Merchants
+Table merchants {
+  id UUID [pk, unique]
+  company_id uuid [null, ref: > companies.id]
+  user_id uuid [not null, unique, ref: - users.id]
+  keywords jsonb [null, note: "keywords"]
+  remark text [null, note: ""]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Merchant contact category
+Table merchant_contact_categories {
+  id bigserial [pk, increment]
+  name varchar [not null]
+  description varchar [null]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Merchant contact books
+Table merchant_contact_books {
+  id UUID [pk, unique]
+  contact_id UUID [not null, unique, ref: > contacts.id]
+  merchant_id uuid [null, ref: > merchants.id]
+  merchant_contact_category_id bigserial [null, ref: > merchant_contact_categories.id]
+  remark text [null, note: "add some remark note by merchant for this contact"]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+enum MerchantSubscriptionStatus {
+  "pending"
+  "payment pending"
+  "payment success"
+  "payment failed"
+  "running"
+  "terminated"
+}
+
+// Merchant subscription
+Table merchant_subscriptions {
+  id bigseries [pk, increment]
+  subscription_plan_id bigserial [null, ref: > subscription_plans.id]
+  merchant_id uuid [not null, unique, ref: > merchants.id]
+  remark text [null, note: ""]
+  start_date date [not null, note: "merchant subscription plan start date"]
+  end_date date [not null, note: "merchant subscription plan end date"]
+  status MerchantSubscriptionStatus [not null, default: "pending"]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+/**
+* SERVER
+**/
+// Server
+Table servers {
+  id bigserial [pk, increment]
+  host varchar [not null]
+  access_key varchar [null]
+  secret_key varchar [null]
+  hash_method varchar [null, default: "SHA1"]
+  status varchar [default: "online"]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Server user sessions
+Table server_user_sessions {
+  id bigserial [pk, increment]
+  name varchar [not null, note: "session name"]
+  description varchar [null]
+  user_id uuid [not null, unique, ref: > users.id]
+  server_id uuid [not null, unique, ref: > servers.id]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+
+/**
+* CHATS
+**/
+//  User Bundle Message Templates
+Table user_message_bundle_templates {
+  id uuid [pk, unique]
+  name varchar [not null]
+  description varchar [null]
+  user_id UUID [null, ref: > users.id]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// User Template Messages
+Table user_template_messages {
+  id uuid [pk, unique]
+  name varchar [not null]
+  message varchar [null]
+  user_message_bundle_template_id UUID [null, ref: > user_message_bundle_templates.id]
+  message_attachment_id UUID [null, ref: > medias.id]
+  sort integer [default: 0, note: "sorting"]
+  que_count integer [default: 0]
+  sent_count integer [default: 0]
+  cancel_count integer [default: 0]
+  invalid_count integer [default: 0]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Chatrooms
+Table chatrooms {
+  id UUID [pk, unique]
+  user_id uuid [not null, unique, ref: - users.id]
+  contact_id uuid [null, ref: > contacts.id]
+  remark text [null, note: ""]
+  last_message_id UUID [null, ref: > chat_messages.id]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Chat Messages
+Table chat_messages {
+  id UUID [pk, unique]
+  chatroom_id uuid [not null, ref: > chatrooms.id]
+  user_id uuid [null, ref: > users.id]
+  contact_id uuid [null, ref: > contacts.id]
+  message text [null, note: ""]
+  is_sentby_contact boolean [default: false]
+  is_seen boolean [default: false]
+  user_template_msg_id UUID [null, ref: > user_template_messages.id]
+  message_attachment_id UUID [null, ref: > medias.id]
+  activated boolean
+  created_at timestamp
+  updated_at timestamp
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
+}
+
+// Chat Messages
+Table chat_messages_log {
+  id UUID [pk, unique]
+  chat_message_id UUID [null, ref: > chat_messages.id]
+  user_template_msg_id UUID [null, ref: > user_template_messages.id]
   status varchar
-  source varchar
   activated boolean
   created_at timestamp
   updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  company_id bigserial [ref: > companies.id]
-  country_id bigserial [ref: > countries.id]
-}
-
-Table contact_settings {
-  id bigserial
-  setting_name varchar
-  setting_value varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  contact_id bigserial [ref: > contacts.id]
-}
-
-enum call_status {
-  "pickup"
-  "not pickup"
-}
-
-enum call_outcome {
-  "coming"
-  "not coming"
-}
-
-enum invite_status {
-  "coming"
-  "not coming"
+  created_by_id uuid [ref: > users.id]
+  updated_by_id uuid [ref: > users.id]
 }
 
 
-// Eligible List
-Table class_contact_eligibles {
-  id bigserial
-  // below are the contact details, get them from the contact table
-  // full_name varchar
-  // ref_no varchar
-  // email varchar
-  // contact_no varchar
-  
-  invite_email_date date
-  reminder_invite_email_date date
-  call_status call_status
-  call_outcome call_outcome
-  invite_status invite_status
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id varchar
-  updated_by_id varchar
-  contact_id bigserial [ref: > contacts.id]
-  class_id bigserial [ref: > classes.id]
-  company_id bigserial [ref: > companies.id]
-}
-
-enum contact_class_status {
-  POSTPONED
-  COMPLETED
-}
-
-// Eligible List - from registration (web)
-// Registstration List
-Table class_contact_registrations {
-  id bigserial
-  remark text [note: "action / reminder"]
-  is_nda boolean [note: "is signed nda"]
-  is_merchandise boolean [note: "is merchandise ?"]
-  is_paid boolean [note: "is paid"]
-  is_deposit boolean [note: "is paid by deposit"]
-  is_redeemed boolean [note: "is redeemed by free class"]
-  redeem_datetime datetime
-  status contact_class_status
-  merchandise_payment double
-  merchandise_status varchar
-  merchandise_date date
-  t_shirt_size varchar
-  appeal_status varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  contact_id bigserial [ref: > contacts.id]
-  class_id bigserial [ref: > classes.id]
-}
-
-Table contact_activities {
-  id bigserial
-  title varchar
-  description varchar
-  link varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  contact_id bigserial [ref: > contacts.id]
-}
-
-Table contacts_class_attendance {
-  id bigserial
-  contact_id bigserial [ref: > contacts.id]
-  class_id bigserial [ref: > classes.id]
-  class_date date
-  attendanced boolean
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table contact_form_responses {
-  id bigserial
-  question varchar
-  answer varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  contact_id bigserial [ref: > contacts.id]
-  class_id bigserial [ref: > classes.id]
-}
-
-Table calls_status {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table contacts_upsell_interviews {
-  id bigserial
-  payment_status varchar
-  amount_collected float
-  amount_percentage integer
-  latest_date_of_payment date
-  post_event_email_date date
-  type varchar
-  remark text
-  call_outcome varchar
-  meeting_link varchar
-  response text
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  call_status_id bigserial [ref: > calls_status.id]
-  currency_id bigserial [ref: > currencies.id]
-  lead_id bigserial [ref: > contacts.id]
-  employee_id bigserial [ref: > employees.id]
-  class_id bigserial [ref: > classes.id]
-}
-
-Table availability_closers {
-  id bigserial
-  date varchar
-  from_time varchar
-  to_time float
-  is_allocated boolean
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  employee_id bigserial [ref: > employees.id]
-  class_id bigserial [ref: > classes.id]
-}
-
-Table employees_time_allocations {
-  id bigserial
-  appointment_title varchar
-  event_url varchar
-  cash_to_invest float
-  interest_level varchar [note: "purpose to be allocated first"]
-  interview_date date
-  interview_time time
-  closer_status varchar
-  company_status varchar
-  availability_closer number
-  remark text
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  payment_method_id bigserial [ref: > payment_methods.id]
-  employee_id bigserial [ref: > employees.id]
-  contact_id bigserial [ref: > contacts.id]
-  class_id bigserial [ref: > classes.id]
-  availability_closer_id bigserial [ref: > availability_closers.id]
-}
-
-// campaigns -> from webinar
-Table campaigns {
-  id bigserial
-  name varchar
-  code varchar
-  workshop_date date
-  workshop_time time
-  merchandise boolean
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  country_id bigserial [ref: > countries.id]
-  program_id bigserial [ref: > programs.id]
-}
-
-// Potential Eligible List - from campaign (webinar)
-Table campaigns_contacts {
-  id bigserial
-  full_name varchar
-  email varchar
-  payment_email varchar
-  contact_number float
-  is_webinar_purchased boolean
-  transaction_id bigserial
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  campaigns_id bigserial [ref: > campaigns.id]
-  contact_id bigserial [ref: > contacts.id]
-}
-
-Table campaigns_results {
-  id bigserial
-  adv_spend float
-  total_contacts float
-  cost_per_lead float
-  sales_unit float
-  cost_per_sale float
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  webinar_id bigserial [ref: > campaigns.id]
-}
-
-Table hash_types {
-  id bigserial
-  name varchar
-  code varchar
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-// FINANCIAL & PAYMENT & TRANSACTIONS
-
-// Payment Gateway, Manual Transaction
-Table payment_types {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table payment_methods {
-  id bigserial
-  name varchar
-  description varchar
-  merchant_id bigserial
-  secret_key varchar
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  hash_type_id bigserial [ref: > hash_types.id]
-}
-
-// order types
-Table order_types {
-  id bigserial
-  name varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table orders {
-  id bigserial
-  ref_number float
-  title varchar
-  type varchar
-  item varchar
-  amount float
-  transaction_date datetime
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-  payment_method_id bigserial [ref: > payment_methods.id]
-}
-
-Table financials_collections {
-  id bigserial
-  full_name varchar
-  payment_email varchar
-  contact_number float
-  code varchar
-  transaction_date datetime
-  invoice_number float
-  bill_id float
-  processor float
-  amount_paid float
-  transaction_fee float
-  amount_received float
-  payout float
-  payment_method_id bigserial [ref: > payment_methods.id]
-  order_id bigserial [ref: > orders.id]
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table commissions {
-  id bigserial
-  name varchar
-  description varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table financials_commissions {
-  id bigserial
-  full_name varchar
-  email varchar
-  payment_email varchar
-  contact_number float
-  code varchar
-  signup_date datetime
-  last_transaction_date datetime
-  last_issue_date datetime
-  payment_status varchar
-  balance_bf float
-  balance_cf float
-  deduction float
-  sst float
-  transaction_fee float
-  commission_issued boolean
-  program_id bigserial [ref: > programs.id]
-  payment_method_id bigserial [ref: > payment_methods.id]
-  commission_id bigserial [ref: > commissions.id]
-  employee_id bigserial [ref: > employees.id]
-  course_id bigserial [ref: > courses.id]
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table refund_types { 
-  id bigserial
-  name varchar
-  description varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table financials_refunds {
-  id bigserial
-  full_name varchar
-  email varchar
-  payment_email varchar
-  contact_number float
-  code varchar
-  request_date datetime
-  marker_date datetime
-  outstanding_amount_to_be_cn float
-  request_status varchar
-  amount_received float
-  refunded_amount float
-  bank_name varchar
-  bank_account_holder_name varchar
-  account_number float
-  credit_notes varchar
-  authorised boolean
-  proceed boolean
-  refund_type_id bigserial [ref: > refund_types.id]
-  program_id bigserial [ref: > programs.id]
-  payment_method_id bigserial [ref: > payment_methods.id]
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-// Annoucements
-Table announcemets {
-  id bigserial
-  title varchar
-  content varchar
-  system_user_id bigserial [ref: > system_users.id]
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-// Notifications
-Table notifications {
-  id bigserial
-  title varchar
-  content varchar
-  system_user_id bigserial [ref: > system_users.id]
-  employee_id bigserial [ref: > employees.id]
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-// Arrears
-Table arrears {
-  id bigserial
-  contacts_upsell_interview_id bigserial [ref: > contacts_upsell_interviews.id]
-  reminder_date datetime
-  due_payment_date datetime
-  remarks longtext
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-// ADMIN TODO TASKS
-enum admin_task_status {
-  PENDING
-  RUNNING
-  DONE
-  FAILURE
-}
-
-Table admin_task_categories {
-  id bigserial
-  name varchar
-  description varchar
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}
-
-Table admin_tasks {
-  id bigserial
-  name varchar
-  description varchar
-  admin_task_category_id bigserial [ref: > admin_task_categories.id]
-  arrear_id bigserial [ref: > arrears.id]
-  due_date datetime
-  remarks longtext
-  status admin_task_status
-  activated boolean
-  created_at timestamp
-  updated_at timestamp
-  created_by_id bigserial [ref: > system_users.id]
-  updated_by_id bigserial [ref: > system_users.id]
-}

@@ -1,19 +1,18 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { IApiHandlerResponse } from '../../../../domains/core/interfaces/common-interface';
+import { IAPIHandlerResponse } from '../../../../core/interfaces/common-interface';
 import { inject, injectable } from 'inversify';
-import { INTERCEPTOR_TYPES } from '../../../../core/types/interceptors.types';
 import { IHeathcheckUsecase } from '../../../../domains/healthcheck/healthcheck.interceptor';
-import { HealthCheck } from 'aws-sdk/clients/eventbridge';
 import { HealthStatus, IHealthCheckDto } from '../../../../domains/healthcheck';
-import { DomainEntity } from '../../../../domains/core/entities/domain.entity';
+import { INTERCEPTOR_TOKENS_TYPES } from '../../../../core/types/interceptors.types';
+
 
 @injectable()
 export class HealthCheckController {
     private useCase: IHeathcheckUsecase;
 
     constructor(
-        @inject(INTERCEPTOR_TYPES.HEALTHCHECK_USECASE)
+        @inject(INTERCEPTOR_TOKENS_TYPES.HEALTHCHECK_USECASE)
         useCase: IHeathcheckUsecase,
     ) {
         this.useCase = useCase;
@@ -22,7 +21,7 @@ export class HealthCheckController {
     public GetHealthCheck = async (
         request: Request,
         response: Response,
-    ): Promise<IApiHandlerResponse> => {
+    ): Promise<IAPIHandlerResponse> => {
         const serverStatus: HealthStatus = new HealthStatus(
             'online',
             'ALIVE 🚀 To infinity and beyond!',

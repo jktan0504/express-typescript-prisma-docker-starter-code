@@ -1,5 +1,12 @@
 import { Request, Response } from 'express';
-import { TModel, TModelId } from '../../../core/types';
+import { TModel, TModelId } from '../types';
+import { IErrorResponse } from './error-response.interface';
+
+export interface IQueryOptions {
+    per_page?: number;
+    current_page?: number;
+    [key: string]: any;
+}
 
 export interface IPaginateParams {
     per_page: number;
@@ -49,7 +56,7 @@ export interface IPapaParseResponse {
     errors?: Array<unknown>;
 }
 
-export interface IApiHandlerResponse {
+export interface IAPIHandlerResponse {
     statusCode: number;
     message?: string;
     meta?: object;
@@ -57,6 +64,6 @@ export interface IApiHandlerResponse {
     error?: Error | string | object;
 }
 
-export interface IApiHandler {
-    (req: Request, res: Response): Promise<IApiHandlerResponse>;
+export interface IAPIHandler {
+    (req: Request, res: Response): Promise<IAPIHandlerResponse | IErrorResponse>;
 }

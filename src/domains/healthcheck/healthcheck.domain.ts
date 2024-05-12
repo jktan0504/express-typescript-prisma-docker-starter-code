@@ -1,7 +1,8 @@
-import { DomainEntity } from '../core/entities/domain.entity';
+
+import { BaseEntity } from '../../core/domain/base.entity';
 import { IHealthCheckDto } from './healthcheck.interface';
 
-class HealthStatus extends DomainEntity {
+class HealthStatus extends BaseEntity {
     readonly status: string;
     readonly message: string;
     readonly appVersion: string;
@@ -19,15 +20,6 @@ class HealthStatus extends DomainEntity {
         appVersion: string,
     ): HealthStatus {
         return new HealthStatus(status, message, appVersion);
-    }
-
-    public toDTO(): IHealthCheckDto {
-        return {
-            name: 'Health Check', // You can customize this name
-            status: this.status,
-            message: this.message,
-            appVersion: this.appVersion,
-        };
     }
 }
 

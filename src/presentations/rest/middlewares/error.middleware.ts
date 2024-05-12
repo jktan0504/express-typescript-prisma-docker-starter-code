@@ -11,10 +11,10 @@
  * @last_update: 30 April 2024
  */
 import { NextFunction, Request, Response } from 'express';
-import { DomainException } from '../../../domains/core/exceptions/domain.exception';
+import { BaseException } from '../../../core/domain/exceptions/base.exception';
 
 export function ErrorMiddleware(
-    err: DomainException,
+    err: BaseException,
     req: Request,
     res: Response,
     next: NextFunction,

@@ -1,6 +1,5 @@
 export * from './api.exception';
 export * from './bad-request.exception';
-export * from './exception.api-response';
 export * from './forbidden.exception';
 export * from './internal-server-error.exception';
 export * from './no-credentials-provided.exception';

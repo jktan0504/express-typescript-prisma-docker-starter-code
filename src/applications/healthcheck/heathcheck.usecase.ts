@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { IBaseUseCase } from '../../core/interfaces/base-usecase.interface';
+
 import {
     HealthStatus,
     IHealthCheckDto,

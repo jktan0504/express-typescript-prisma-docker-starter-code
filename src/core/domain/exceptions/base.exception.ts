@@ -1,6 +1,6 @@
-import { IErrorResponse } from '../interfaces/error-response.interface';
+import { IErrorResponse } from '../../interfaces/error-response.interface';
 
-abstract class DomainException extends Error {
+abstract class BaseException extends Error {
     readonly statusCode: number;
     readonly errorCode: string;
     readonly message: string;
@@ -18,4 +18,4 @@ abstract class DomainException extends Error {
     }
 }
 
-export { DomainException };
+export { BaseException };

@@ -4,7 +4,7 @@ import { Nullable } from '../types/nullable.types';
 import pino from 'pino';
 
 class Logger implements LoggerDomainService {
-    private static loggerInstance: LoggerDomainService = PINO_LOGGER;
+    private static loggerInstance: LoggerDomainService = PINO_LOGGER.logger;
 
     private context: Nullable<string>;
 
@@ -18,7 +18,7 @@ class Logger implements LoggerDomainService {
         Logger.loggerInstance.debug(message, ...optionalParameters);
     }
 
-    public static info(message: any, ...optionalParameters: any[]): void {
+    public static info(message: any, ...optionalParameters: any[]): void {	
         Logger.loggerInstance.info(message, ...optionalParameters);
     }
 

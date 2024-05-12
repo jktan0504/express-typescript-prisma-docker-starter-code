@@ -16,17 +16,14 @@ import express, { Express, Request, Response } from 'express';
 import http from 'http';
 import cors from 'cors';
 import fileupload from 'express-fileupload';
-
 import 'express-async-errors';
 import 'reflect-metadata';
 import { routes } from './router';
-import expressPinoLogger from 'express-pino-logger';
-import { Logger } from '../../core/utils/logger';
 import {
-    PINO_LOGGER,
-    PinoLogger,
+    PINO_LOGGER
 } from '../../core/services/logger/pino-logger';
 import { ErrorMiddleware } from './middlewares';
+import { Logger } from '../../core/utils/logger';
 
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger/swagger-output.json';
@@ -63,7 +60,7 @@ export class APIServer {
         app.use(ErrorMiddleware);
 
         // Logger Middleware
-        app.use(expressPinoLogger({ logger: PINO_LOGGER.logger }));
+        app.use(PINO_LOGGER.createPinoHttpMiddleware());
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: Unreachable code error
@@ -91,24 +88,9 @@ export class APIServer {
         //     }),
         // );
 
-		// TODO: Websocket
-		// Create a WebSocket server
-		// const wss = new WebSocketServer({ server });
-
-		// wss.on('connection', (ws) => {
-		//   // Connection is up, let's add a simple event
-		//   ws.on('message', (message) => {
-		// 	// Log the received message
-		// 	console.log('received: %s', message);
-		//   });
-	
-		//   // Send a message
-		//   ws.send('Hello! You are connected to the WebSocket server.');
-		// });
-
         server.listen(port, () => {
-            console.log(`[Server]: API is running at http://localhost:${port}`);
-            console.log(
+            Logger.info(`[Server]: API is running at http://localhost:${port}`);
+            Logger.info(
                 `[Server]: Swagger is running at http://localhost:${port}/docs`,
             );
         });

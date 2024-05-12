@@ -12,7 +12,7 @@ const {
     DATABASE_HOST,
     DATABASE_PORT,
     DATABASE_USER,
-    DATABASE_NAME,
+    DATABASE_DB,  // Database Name
     DATABASE_PASSWORD,
 } = process.env;
 
@@ -24,10 +24,14 @@ const configs: IKnexConfig = {
             port: DATABASE_PORT as unknown as number,
             user: DATABASE_USER,
             password: DATABASE_PASSWORD,
-            database: DATABASE_NAME,
+            database: DATABASE_DB,
+        },
+		pool: {
+            min: 5,
+            max: 10,
         },
         migrations: {
-            directory: './migrations',
+            directory: '../../infrastructures/databases/postgres/migrations',
         },
     },
     development: {
@@ -37,13 +41,15 @@ const configs: IKnexConfig = {
             port: DATABASE_PORT as unknown as number,
             user: DATABASE_USER,
             password: DATABASE_PASSWORD,
-            database: DATABASE_NAME,
+            database: DATABASE_DB,
         },
         migrations: {
-            directory: './migrations',
+            extension: 'ts',
+			directory: '../../infrastructures/databases/postgres/migrations',
         },
         seeds: {
-            directory: './seeds',
+			extension: 'ts',
+            directory: '../../infrastructures/databases/postgres/seeds',
         },
     },
     staging: {
@@ -53,14 +59,17 @@ const configs: IKnexConfig = {
             port: DATABASE_PORT as unknown as number,
             user: DATABASE_USER,
             password: DATABASE_PASSWORD,
-            database: DATABASE_NAME,
+            database: DATABASE_DB,
         },
         pool: {
-            min: 2,
-            max: 5,
+            min: 5,
+            max: 10,
         },
-        migrations: {
-            directory: './migrations',
+		migrations: {
+            directory: '../../infrastructures/databases/postgres/migrations',
+        },
+        seeds: {
+            directory: '../../infrastructures/databases/postgres/seeds',
         },
     },
     production: {
@@ -70,14 +79,17 @@ const configs: IKnexConfig = {
             port: DATABASE_PORT as unknown as number,
             user: DATABASE_USER,
             password: DATABASE_PASSWORD,
-            database: DATABASE_NAME,
+            database: DATABASE_DB,
         },
         pool: {
             min: 5,
             max: 10,
         },
         migrations: {
-            directory: './migrations',
+            directory: '../../infrastructures/databases/postgres/migrations',
+        },
+        seeds: {
+            directory: '../../infrastructures/databases/postgres/seeds',
         },
     },
 };

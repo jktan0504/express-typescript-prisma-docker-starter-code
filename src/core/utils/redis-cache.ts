@@ -16,7 +16,7 @@ let redis: RedisClientType | RedisClient;
         return;
     }
 
-    const { redisCacheClient } = await import('../../configs/redis');
+    const { redisCacheClient } = await import('../../core/configs/redis');
 
     redis = redisCacheClient as RedisClientType;
 
