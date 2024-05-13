@@ -15,11 +15,11 @@ import express from 'express';
 
 // ** Routes
 import { healthCheckRoutes } from './healthcheck/healthcheck.route';
-import { currencyRoutes } from './countries/currency/currency.routes';
+import { countryModuleRoutes } from './countries';
 
 export const routes = express.Router();
 
 routes.use([
 	healthCheckRoutes,
-	currencyRoutes
+	countryModuleRoutes
 ]);

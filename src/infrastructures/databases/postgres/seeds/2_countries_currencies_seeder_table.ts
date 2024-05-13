@@ -3101,6 +3101,9 @@ export async function seed(knex: Knex): Promise<void> {
         },
     ]);
 
+	await knex.raw("SELECT setval('currencies_id_seq', (SELECT max(id) FROM currencies))");
+
+
 	// update system user created_by
 	await knex(EnumDatabaseTables.USER_INFO_TABLE)
         .update({
