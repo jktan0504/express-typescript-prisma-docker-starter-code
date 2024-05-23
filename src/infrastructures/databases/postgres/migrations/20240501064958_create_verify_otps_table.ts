@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { EnumDatabaseTables } from '../../../../core/enums';
 
 // Tables
-const SELECTED_TABLE = EnumDatabaseTables.SERVER_USER_SESSIONS_TABLE;
+const SELECTED_TABLE = EnumDatabaseTables.VERIFY_OTPS_TABLE;
 
 export async function up(knex: Knex): Promise<void> {
 	
@@ -11,21 +11,12 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(SELECTED_TABLE, function (table) {
 
 			// Custom Fields
-            table.bigIncrements('id').primary().unique().comment('session id');
-			table.string('name').unique().notNullable().comment('sever session name');
-			table.text('description').nullable().comment('sever session description');
-			table
-				.uuid('user_id')
-				.unsigned()
-				.nullable()
-				.references('id')
-				.inTable(EnumDatabaseTables.USERS_TABLE);
-			table
-				.bigInteger('server_id')
-				.unsigned()
-				.nullable()
-				.references('id')
-				.inTable(EnumDatabaseTables.SERVERS_TABLE);
+            table.bigIncrements('id').primary().unique().comment('password reset id');
+			table.string('email').nullable().comment('email');
+			table.string('username').nullable().comment('username');
+			table.text('otp').comment('otp');
+			// Add a composite unique index for username and email
+			table.unique(['email', 'username']);
 
 			// Standard Base DB Fields
             table.boolean('activated').defaultTo(true);
@@ -48,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTableIfExists(SELECTED_TABLE);
+	// await knex.schema.dropTableIfExists(SELECTED_TABLE);
 	// Be Careful when using CASCADE
-    // await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
+    await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
 }

@@ -1306,8 +1306,8 @@ export async function seed(knex: Knex): Promise<void> {
         },
         {
             id: 27,
-            name: 'Republic of Singapore',
-            code: 'SG',
+            name: 'Singapore',
+            code: '65',
             timezone: 'UTC+08:00',
             currency_id: 21,
             created_by_id: '2322e309-cb50-4cf9-9cff-ee24dd20b63d',
@@ -1371,7 +1371,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             id: 35,
             name: 'Malaysia',
-            code: 'MY',
+            code: '60',
             timezone: 'UTC+08:00',
             currency_id: 26,
             created_by_id: '2322e309-cb50-4cf9-9cff-ee24dd20b63d',
@@ -1940,7 +1940,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             id: 106,
             name: 'Republic of Indonesia',
-            code: 'ID',
+            code: '62',
             timezone: 'UTC+07:00,UTC+08:00,UTC+09:00',
             currency_id: 69,
             created_by_id: '2322e309-cb50-4cf9-9cff-ee24dd20b63d',
@@ -3105,9 +3105,11 @@ export async function seed(knex: Knex): Promise<void> {
 
 
 	// update system user created_by
-	await knex(EnumDatabaseTables.USER_INFO_TABLE)
+	await knex(EnumDatabaseTables.USER_DETAILS_TABLE)
         .update({
             country_id: 35,
         })
         .where('id',  '73edee95-50e9-4693-8060-6cdceacd359e');
+
+	await knex.raw("SELECT setval('countries_id_seq', (SELECT max(id) FROM countries))");
 }

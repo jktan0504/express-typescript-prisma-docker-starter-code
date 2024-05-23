@@ -14,26 +14,26 @@ interface IBaseInterface {
 
 // IBaseRepository.ts
 interface IBaseRepository<T> {
-	getAll(query: any): Promise<T[]>; 
-	getBy(options: IQueryOptions): Promise<{ data: T[], meta: IPagination }>;
-    getByID(id: string | bigint): Promise<T>;
+	getAll(query?: any): Promise<T[]>; 
+	getBy(query: IQueryOptions): Promise<{ data: T[], meta: IPagination }>;
+    getByID(id: string | bigint, query?: IQueryOptions): Promise<T>;
 	create(entity: T): Promise<T>;
 	bulkCreate(entities: T[]): Promise<T[]>
     updateByID(id: string | bigint, entity: T): Promise<T>;
-    deleteByID(id: string | bigint): Promise<boolean>;
-	bulkDelete(entities: T[] | string[] | bigint[]): Promise<boolean>
+    deleteByID(id: string | bigint): Promise<any>;
+	bulkDelete(entities: T[] | string[] | bigint[]): Promise<any>
 }
 
 // IBaseUseCase.ts
 interface IBaseUseCase<T> {
-    getAll(query: any): Promise<T[]>;
-	getBy(options: IQueryOptions): Promise<{ data: T[], meta: IPagination }>;
-    getByID(id: string | bigint): Promise<T>;
+    getAll(query?: any): Promise<T[]>;
+	getBy(query: IQueryOptions): Promise<{ data: T[], meta: IPagination }>;
+    getByID(id: string | bigint, query?: IQueryOptions): Promise<T>;
     create(entity: T): Promise<T>;
     bulkCreate(entities: T[]): Promise<T[]>;
     updateByID(id: string | bigint, entity: T): Promise<T>;
-    deleteByID(id: string | bigint): Promise<boolean>;
-    bulkDelete(ids: string[] | bigint[] | T[]): Promise<boolean>;
+    deleteByID(id: string | bigint): Promise<any>;
+    bulkDelete(ids: string[] | bigint[] | T[]): Promise<any>;
 }
 
 // IBaseController.ts

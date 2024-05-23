@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import { IBaseUseCase, IPagination, IQueryOptions } from "../interfaces";
 import { BaseRepository } from "../repository/base.repo";
-import { Logger } from "../utils/logger";
 
 @injectable()
 class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T>> implements IBaseUseCase<T> {
@@ -11,7 +10,7 @@ class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T
         this.repository = repository;
     }
 
-    getAll = async (query: any): Promise<T[]> => {
+    getAll = async (query: IQueryOptions): Promise<T[]> => {
 		return await this.repository.getAll(query);
     }
 
@@ -19,8 +18,8 @@ class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T
         return await this.repository.getBy(query);
     }
 
-    getByID = async (id: string | bigint): Promise<T> => {
-		return await this.repository.getByID(id);
+    getByID = async (id: string | bigint, query: IQueryOptions): Promise<T> => {
+		return await this.repository.getByID(id, query);
     }
 
     create = async (entity: T): Promise<T> => {
@@ -35,11 +34,11 @@ class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T
         return await this.repository.updateByID(id, entity);
     }
 
-    deleteByID = async (id: string | bigint): Promise<boolean> => {
+    deleteByID = async (id: string | bigint): Promise<any> => {
         return await this.repository.deleteByID(id);
     }
 
-    bulkDelete = async (ids: string[] | bigint[] | T[]): Promise<boolean> => {
+    bulkDelete = async (ids: string[] | bigint[] | T[]): Promise<any> => {
         return await this.repository.bulkDelete(ids);
     }
 }

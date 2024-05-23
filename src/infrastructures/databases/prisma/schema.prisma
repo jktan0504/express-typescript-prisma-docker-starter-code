@@ -1,0 +1,108 @@
+generator client {
+    provider   = "prisma-client-js"
+    engineType = "binary"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model countries {
+    id                                   BigInt         @id @default(autoincrement())
+    name                                 String?        @unique(map: "countries_name_unique") @db.VarChar(255)
+    code                                 String?        @db.VarChar(255)
+    timezone                             String?        @db.VarChar(255)
+    currency_id                          BigInt?
+    activated                            Boolean?       @default(true)
+    created_at                           DateTime?      @default(now()) @db.Timestamptz(6)
+    updated_at                           DateTime?      @default(now()) @db.Timestamptz(6)
+    created_by_id                        String?        @db.Uuid
+    updated_by_id                        String?        @db.Uuid
+    users_countries_created_by_idTousers users?         @relation("countries_created_by_idTousers", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "countries_created_by_id_foreign")
+    currency                             currencies?    @relation(fields: [currency_id], references: [id], onDelete: Cascade, map: "countries_currency_id_foreign")
+    users_countries_updated_by_idTousers users?         @relation("countries_updated_by_idTousers", fields: [updated_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "countries_updated_by_id_foreign")
+    user_details                         user_details[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model currencies {
+    id                                    BigInt      @id @default(autoincrement())
+    name                                  String?     @unique(map: "currencies_name_unique") @db.VarChar(255)
+    code                                  String?     @db.VarChar(255)
+    symbol                                String?     @db.VarChar(255)
+    activated                             Boolean?    @default(true)
+    created_at                            DateTime?   @default(now()) @db.Timestamptz(6)
+    updated_at                            DateTime?   @default(now()) @db.Timestamptz(6)
+    created_by_id                         String?     @db.Uuid
+    updated_by_id                         String?     @db.Uuid
+    countries                             countries[]
+    users_currencies_created_by_idTousers users?      @relation("currencies_created_by_idTousers", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "currencies_created_by_id_foreign")
+    users_currencies_updated_by_idTousers users?      @relation("currencies_updated_by_idTousers", fields: [updated_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "currencies_updated_by_id_foreign")
+}
+
+model knex_migrations {
+    id             Int       @id @default(autoincrement())
+    name           String?   @db.VarChar(255)
+    batch          Int?
+    migration_time DateTime? @db.Timestamptz(6)
+}
+
+model knex_migrations_lock {
+    index     Int  @id @default(autoincrement())
+    is_locked Int?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model media {
+    id                               String                       @id @unique(map: "media_id_unique") @db.Uuid
+    name                             String?                      @unique(map: "media_name_unique") @db.VarChar(255)
+    description                      String?
+    activated                        Boolean?                     @default(true)
+    created_at                       DateTime?                    @default(now()) @db.Timestamptz(6)
+    updated_at                       DateTime?                    @default(now()) @db.Timestamptz(6)
+    created_by_id                    String?                      @db.Uuid
+    updated_by_id                    String?                      @db.Uuid
+    chat_messages                    chat_messages[]
+    companies                        companies[]
+    company_categories               company_categories[]
+    company_contact_categories       company_contact_categories[]
+    users_media_created_by_idTousers users?                       @relation("media_created_by_idTousers", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_created_by_id_foreign")
+    users_media_updated_by_idTousers users?                       @relation("media_updated_by_idTousers", fields: [updated_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "media_updated_by_id_foreign")
+    media_files                      media_files[]
+    merchant_template_messages       merchant_template_messages[]
+    user_details                     user_details[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model roles {
+    id                               BigInt    @id @default(autoincrement())
+    name                             String?   @unique(map: "roles_name_unique") @db.VarChar(255)
+    description                      String?
+    activated                        Boolean?  @default(true)
+    created_at                       DateTime? @default(now()) @db.Timestamptz(6)
+    updated_at                       DateTime? @default(now()) @db.Timestamptz(6)
+    created_by_id                    String?   @db.Uuid
+    updated_by_id                    String?   @db.Uuid
+    rbac                             rbac[]
+    users_roles_created_by_idTousers users?    @relation("roles_created_by_idTousers", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "roles_created_by_id_foreign")
+    users_roles_updated_by_idTousers users?    @relation("roles_updated_by_idTousers", fields: [updated_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "roles_updated_by_id_foreign")
+    users_users_role_idToroles       users[]   @relation("users_role_idToroles")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sso_auth_providers {
+    id                                                   BigInt    @id @default(autoincrement())
+    name                                                 String?   @unique(map: "sso_auth_providers_name_unique") @db.VarChar(255)
+    client_id                                            String?
+    client_secret                                        String?
+    activated                                            Boolean?  @default(true)
+    created_at                                           DateTime? @default(now()) @db.Timestamptz(6)
+    updated_at                                           DateTime? @default(now()) @db.Timestamptz(6)
+    created_by_id                                        String?   @db.Uuid
+    updated_by_id                                        String?   @db.Uuid
+    users_sso_auth_providers_created_by_idTousers        users?    @relation("sso_auth_providers_created_by_idTousers", fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sso_auth_providers_created_by_id_foreign")
+    users_sso_auth_providers_updated_by_idTousers        users?    @relation("sso_auth_providers_updated_by_idTousers", fields: [updated_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sso_auth_providers_updated_by_id_foreign")
+    users_users_sso_auth_provider_idTosso_auth_providers users[]   @relation("users_sso_auth_provider_idTosso_auth_providers")
+}

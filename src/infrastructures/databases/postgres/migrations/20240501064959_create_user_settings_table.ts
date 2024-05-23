@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { EnumDatabaseTables } from '../../../../core/enums';
 
 // Tables
-const SELECTED_TABLE = EnumDatabaseTables.SERVERS_TABLE;
+const SELECTED_TABLE = EnumDatabaseTables.USER_SETTINGS_TABLE;
 
 export async function up(knex: Knex): Promise<void> {
 	
@@ -11,12 +11,17 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(SELECTED_TABLE, function (table) {
 
 			// Custom Fields
-            table.bigIncrements('id').primary().unique().comment('server id');
-			table.string('host').notNullable().comment('sever hostname');
-			table.string('access_key').nullable().comment('sever access key');
-			table.string('secret_key').nullable().comment('sever secret key');
-			table.string('hash_method').nullable().comment('sever access key');
-			table.string('status').nullable().comment('sever status');
+            table.uuid('id').primary().unique().comment('setting id');
+			table.string('name').comment('setting name');
+			table.string('value_type').comment('value_type');
+			table.text('value').nullable().comment('setting value');
+			table
+				.uuid('user_id')
+				.unsigned()
+				.references('id')
+				.inTable(EnumDatabaseTables.USERS_TABLE)
+				.onDelete('CASCADE')
+				.onUpdate('CASCADE');
 
 			// Standard Base DB Fields
             table.boolean('activated').defaultTo(true);
@@ -39,7 +44,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTableIfExists(SELECTED_TABLE);
+	// await knex.schema.dropTableIfExists(SELECTED_TABLE);
 	// Be Careful when using CASCADE
-    // await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
+    await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
 }

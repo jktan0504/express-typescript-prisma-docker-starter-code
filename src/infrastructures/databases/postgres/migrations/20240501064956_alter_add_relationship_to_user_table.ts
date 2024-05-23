@@ -11,10 +11,10 @@ export async function up(knex: Knex): Promise<void> {
 
 			// Custom Fields
 			table
-				.uuid('user_info_id')
+				.uuid('user_detail_id')
 				.unsigned()
 				.references('id')
-				.inTable(EnumDatabaseTables.USER_INFO_TABLE)
+				.inTable(EnumDatabaseTables.USER_DETAILS_TABLE)
 				.onDelete('CASCADE')
 				.onUpdate('CASCADE');
 			table

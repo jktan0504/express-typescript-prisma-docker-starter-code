@@ -1,5 +1,3 @@
-
-
 import { BaseEntity } from '../../../core/domain/base.entity';
 import { ICurrency } from './currency.interface';
 

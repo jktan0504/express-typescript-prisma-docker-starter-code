@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { EnumDatabaseTables } from '../../../../core/enums';
 
 // Tables
-const SELECTED_TABLE = EnumDatabaseTables.USER_MESSAGE_BUNDLE_TEMPLATES_TABLE;
+const SELECTED_TABLE = EnumDatabaseTables.RBAC_TABLE;
 
 export async function up(knex: Knex): Promise<void> {
 	
@@ -11,15 +11,24 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(SELECTED_TABLE, function (table) {
 
 			// Custom Fields
-            table.uuid('id').primary().unique().comment('message template bundle id');
-			table.string('name').unique().notNullable().comment('message bundle title name');
-			table.text('description').nullable().comment('message bundle description');
+            table.bigIncrements('id').primary().unique().comment('permission id');
 			table
-				.uuid('user_id')
+				.bigInteger('role_id')
 				.unsigned()
-				.nullable()
 				.references('id')
-				.inTable(EnumDatabaseTables.USERS_TABLE);
+				.inTable(EnumDatabaseTables.ROLES_TABLE)
+				.onDelete('CASCADE')
+				.onUpdate('CASCADE');
+			table
+				.bigInteger('permission_id')
+				.unsigned()
+				.references('id')
+				.inTable(EnumDatabaseTables.PERMISSIONS_TABLE)
+				.onDelete('CASCADE')
+				.onUpdate('CASCADE');
+
+			// Add a composite unique index for username and email
+			table.unique(['role_id', 'permission_id']);
 
 			// Standard Base DB Fields
             table.boolean('activated').defaultTo(true);
@@ -42,7 +51,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTableIfExists(SELECTED_TABLE);
+	// await knex.schema.dropTableIfExists(SELECTED_TABLE);
 	// Be Careful when using CASCADE
-    // await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
+    await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
 }

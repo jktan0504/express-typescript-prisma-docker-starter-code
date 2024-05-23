@@ -19,7 +19,7 @@ export async function seed(knex: Knex): Promise<void> {
     });
 
 	// Insert system user
-    const adminUserInfo: RowId[] = await knex(EnumDatabaseTables.USER_INFO_TABLE)
+    const adminUserInfo: RowId[] = await knex(EnumDatabaseTables.USER_DETAILS_TABLE)
         .returning('id')
         .insert([
             {
@@ -44,7 +44,7 @@ export async function seed(knex: Knex): Promise<void> {
                 password:
                     '$2a$12$Uaky5aN5ZKXAtjrLTxiWeOIqTfMGg95kEZsrdPfSVu54eFKLMhpaK',
                 role_id: adminRole ? adminRole[0].id : null,
-				user_info_id: adminUserInfo ? adminUserInfo[0].id : null
+				user_detail_id: adminUserInfo ? adminUserInfo[0].id : null
             },
         ]);
 

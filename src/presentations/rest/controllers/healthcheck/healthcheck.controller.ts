@@ -3,11 +3,11 @@ import { StatusCodes } from 'http-status-codes';
 import { IAPIHandlerResponse } from '../../../../core/interfaces/common-interface';
 import { inject, injectable } from 'inversify';
 import { IHeathcheckUsecase } from '../../../../domains/healthcheck/healthcheck.interceptor';
-import { HealthStatus, IHealthCheckDto } from '../../../../domains/healthcheck';
+import { HealthStatus } from '../../../../domains/healthcheck';
 import { INTERCEPTOR_TOKENS_TYPES } from '../../../../core/types/interceptors.types';
 
-
 @injectable()
+
 export class HealthCheckController {
     private useCase: IHeathcheckUsecase;
 

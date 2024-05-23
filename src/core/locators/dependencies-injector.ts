@@ -21,28 +21,47 @@ import { CurrencyUseCase } from "../../applications/countries/currency/currency.
 import { CurrencyController } from "../../presentations/rest/controllers/countries/currency/currency.controller";
 import { PrismaClient } from "@prisma/client";
 import db from "../../infrastructures/databases/models/prisma.model";
+import { ICountryRepository, ICountryUseCase } from "../../domains/countries/country";
+import { CountryRepository } from "../../infrastructures/repositories/countries/country/country.repo";
+import { CountryUseCase } from "../../applications/countries/country/country.usecase";
+import { CountryController } from "../../presentations/rest/controllers/countries/country/country.controller";
 
-// Initial Container
+/**
+ * Initial Container
+ */
 const container = new Container();
 
+/**
+ * Prisma Client
+ */
 container.bind<PrismaClient>(INTERCEPTOR_TOKENS_TYPES.PRISMA_CLIENT_DB).toConstantValue(db);
 
 /**
  * Bind for All Repositories
  */
+// Currency
 container.bind<ICurrencyRepository>(INTERCEPTOR_TOKENS_TYPES.CURRENCY_REPO).to(CurrencyRepository)
+// Country
+container.bind<ICountryRepository>(INTERCEPTOR_TOKENS_TYPES.COUNTRY_REPO).to(CountryRepository)
 
 /**
  * Bind for All UseCases 
  */
 // Healthcheck Usecase
 container.bind(INTERCEPTOR_TOKENS_TYPES.HEALTHCHECK_USECASE).to(HealthCheckUsecase);
+// Currency Usecase
 container.bind<ICurrencyUseCase>(INTERCEPTOR_TOKENS_TYPES.CURRENCY_USECASE).to(CurrencyUseCase)
+// Country Usecase
+container.bind<ICountryUseCase>(INTERCEPTOR_TOKENS_TYPES.COUNTRY_USECASE).to(CountryUseCase)
 
 /**
  * Bind for All Controllers 
  */
+// HealthCheck Controller
 container.bind(INTERCEPTOR_TOKENS_TYPES.HEALTHCHECK_CONTROLLER).to(HealthCheckController);
+// Currency Controller
 container.bind(INTERCEPTOR_TOKENS_TYPES.CURRENCY_CONTROLLER).to(CurrencyController);
+// Country Controller
+container.bind(INTERCEPTOR_TOKENS_TYPES.COUNTRY_CONTROLLER).to(CountryController);
 
 export { container };

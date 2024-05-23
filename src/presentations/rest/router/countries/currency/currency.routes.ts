@@ -39,9 +39,9 @@ currencyRoutes.delete(
     controller.deleteByID.bind(controller),
 );
 
-currencyRoutes.post(
+currencyRoutes.delete(
     '/currency/bulk',
-    controller.bulkCreate.bind(controller),
+    controller.bulkDelete.bind(controller),
 );
 
 

@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { EnumDatabaseTables } from '../../../../core/enums';
 
 // Tables
-const SELECTED_TABLE = EnumDatabaseTables.COMPANIES_TABLE;
+const SELECTED_TABLE = EnumDatabaseTables.PERMISSIONS_TABLE;
 
 export async function up(knex: Knex): Promise<void> {
 	
@@ -11,26 +11,9 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(SELECTED_TABLE, function (table) {
 
 			// Custom Fields
-            table.uuid('id').primary().unique().comment('company id');
-            table.string('name').unique().comment('company name');
-			table.text('description').nullable().comment('company description');
-			table.string('registration_number').nullable().comment('company registration number');
-			table
-				.bigInteger('company_category_id')
-				.unsigned()
-				.nullable()
-				.references('id')
-				.inTable(EnumDatabaseTables.COMPANY_CATEGORIES_TABLE)
-				.onDelete('CASCADE')
-				.onUpdate('CASCADE');
-			table
-				.uuid('logo_id')
-				.unsigned()
-				.nullable()
-				.references('id')
-				.inTable(EnumDatabaseTables.MEDIAS_TABLE)
-				.onDelete('CASCADE')
-				.onUpdate('CASCADE');
+            table.bigIncrements('id').primary().unique().comment('permission id');
+            table.string('name').unique().comment('permission');
+			table.text('description').nullable().comment('permission description');
 
 			// Standard Base DB Fields
             table.boolean('activated').defaultTo(true);

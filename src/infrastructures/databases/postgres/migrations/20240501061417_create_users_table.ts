@@ -18,10 +18,10 @@ export async function up(knex: Knex): Promise<void> {
 			table.date('email_verified_at').nullable().comment('email verification at');
 			// NOTE: Will add when user table is created
 			// table
-			// 	.bigInteger('user_info_id')
+			// 	.bigInteger('user_detail_id')
 			// 	.unsigned()
 			// 	.references('id')
-			// 	.inTable(EnumDatabaseTables.USER_INFO_TABLE)
+			// 	.inTable(EnumDatabaseTables.USER_DETAILS_TABLE)
 			// 	.onDelete('CASCADE')
 			// 	.onUpdate('CASCADE');
 			// table

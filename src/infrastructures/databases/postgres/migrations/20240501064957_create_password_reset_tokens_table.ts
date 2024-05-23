@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import { EnumDatabaseTables } from '../../../../core/enums';
 
 // Tables
-const SELECTED_TABLE = EnumDatabaseTables.QUEUE_JOBS_TABLE;
+const SELECTED_TABLE = EnumDatabaseTables.PASSWORD_RESET_TOKENS_TABLE;
 
 export async function up(knex: Knex): Promise<void> {
 	
@@ -11,13 +11,12 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(SELECTED_TABLE, function (table) {
 
 			// Custom Fields
-            table.bigIncrements('id').primary().unique().comment('queue job id');
-			table.string('job_type').defaultTo('common').comment('type');
-			table.text('job_data').nullable().comment('data');
-			table.string('action').nullable().comment('action name');
-			table.jsonb('body').nullable().comment('body');
-			table.string('status').defaultTo('pending').comment('status');
-			table.text('remark').nullable().comment('remark');
+            table.bigIncrements('id').primary().unique().comment('password reset id');
+			table.string('email').nullable().comment('email');
+			table.string('username').nullable().comment('username');
+			table.text('token').comment('token');
+			// Add a composite unique index for username and email
+			table.unique(['email', 'username']);
 
 			// Standard Base DB Fields
             table.boolean('activated').defaultTo(true);
@@ -40,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	await knex.schema.dropTableIfExists(SELECTED_TABLE);
+	// await knex.schema.dropTableIfExists(SELECTED_TABLE);
 	// Be Careful when using CASCADE
-    // await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
+    await knex.raw(`DROP TABLE ${SELECTED_TABLE} CASCADE`);
 }

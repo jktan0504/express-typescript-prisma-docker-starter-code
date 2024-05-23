@@ -5,6 +5,7 @@ import { IErrorResponse } from './error-response.interface';
 export interface IQueryOptions {
     per_page?: number;
     current_page?: number;
+	include?: Record<string, unknown>;
     [key: string]: any;
 }
 
