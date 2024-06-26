@@ -1,10 +1,14 @@
 import { IBaseInterface } from "../../../core/interfaces";
+import { ICurrency } from "../currency";
 
 interface ICountry extends IBaseInterface {
-	id?: bigint;
-    name: string;
-    code: string;
-	timezone: string;
+    id?: bigint // bigserial
+    name?: string
+    code?: string
+	timezone?: string
+	currency_id?: bigint
+	currency?: ICurrency
 }
 
-export { ICountry };
+export type { ICountry }
+

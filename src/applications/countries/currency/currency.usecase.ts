@@ -2,10 +2,9 @@
 
 import { inject, injectable } from "inversify";
 import { BaseUseCase } from "../../../core/application/base.usecase";
-import { ICurrency } from "../../../domains/countries/currency";
-import { ICurrencyUseCase } from "../../../domains/countries/currency/currency-usecase.interface";
-import { CurrencyRepository } from "../../../infrastructures/repositories/countries/currency/currency.repo";
 import { INTERCEPTOR_TOKENS_TYPES } from "../../../core/types/interceptors.types";
+import { CurrencyRepository } from "../../../infrastructures/repositories/countries";
+import { ICurrency, ICurrencyUseCase } from "../../../domains/countries";
 
 @injectable()
 class CurrencyUseCase extends BaseUseCase<ICurrency, CurrencyRepository> implements ICurrencyUseCase {

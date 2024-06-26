@@ -1,13 +1,16 @@
 import { injectable } from "inversify";
 import { IBaseUseCase, IPagination, IQueryOptions } from "../interfaces";
 import { BaseRepository } from "../repository/base.repo";
+import { genId } from "../utils/generator";
 
 @injectable()
 class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T>> implements IBaseUseCase<T> {
     protected repository: R;
+	protected isIDString: boolean; // Default value is set to false
 
-    constructor(repository: R) {
+    constructor(repository: R, isIDString: boolean = false) {
         this.repository = repository;
+        this.isIDString = isIDString;
     }
 
     getAll = async (query: IQueryOptions): Promise<T[]> => {
@@ -23,6 +26,9 @@ class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T
     }
 
     create = async (entity: T): Promise<T> => {
+		if (this.isIDString) {
+			entity.id = genId();  // Generate a new UUID 
+		}
 		return await this.repository.create(entity);
     }
 

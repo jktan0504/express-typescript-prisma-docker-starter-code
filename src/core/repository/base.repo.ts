@@ -30,19 +30,25 @@ class BaseRepository<T extends { id?: string | bigint }>
 
         const where = {};
         for (const key in restOptions) {
-            if (options[key]) {
-                (where as any)[key] = {
-                    contains: options[key],
-                    mode: 'insensitive',
-                };
-            }
+			if (options[key]) {
+				if (key.endsWith('_id')) {
+				(where as any)[key] = {
+					equals: options[key],
+				  };
+				} else {
+					(where as any)[key] = {
+						contains: options[key],
+						mode: 'insensitive',
+					};
+				}
+			}
         }
         const count = await this.prismaModel.count();
         const { queryPaginate, meta } = makePaginateMeta(
             { per_page, current_page },
             count,
         );
-
+				
         const data = await this.prismaModel.findMany({
             ...queryPaginate,
             where,

@@ -14,6 +14,7 @@ export async function up(knex: Knex): Promise<void> {
             table.bigIncrements('id').primary().unique().comment('password reset id');
 			table.string('email').nullable().comment('email');
 			table.string('username').nullable().comment('username');
+			table.string('contact_number').unique().comment('contact_number');
 			table.text('otp').comment('otp');
 			// Add a composite unique index for username and email
 			table.unique(['email', 'username']);

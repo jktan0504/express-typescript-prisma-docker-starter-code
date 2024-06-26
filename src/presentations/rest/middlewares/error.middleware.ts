@@ -25,7 +25,7 @@ export function ErrorMiddleware(
     let message = 'Internal Error';
 
     // Check if the error object has custom statusCode, errorCode, and message properties
-    if (err.name && err.name === 'CustomError') {
+    if (err.name && (err.name === 'AuthException' || err.name === 'BaseException')) {
         statusCode = err.statusCode;
         errorCode = err.errorCode;
         message = err.message;

@@ -9,7 +9,7 @@
  * @nickname JK
  * @email jktan0504@hotmail.com
  *
- * @last_update: 30 April 2024
+ * @last_update: 22 June 2024
  */
 
 import express, { Express, Request, Response } from 'express';
@@ -56,11 +56,8 @@ export class APIServer {
         // Support Multipart/form-data Middleware
         app.use(fileupload());
 
-        // Error Middleware
-        app.use(ErrorMiddleware);
-
         // Logger Middleware
-        app.use(PINO_LOGGER.createPinoHttpMiddleware());
+        // app.use(PINO_LOGGER.createPinoHttpMiddleware());
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: Unreachable code error
@@ -88,11 +85,14 @@ export class APIServer {
         //     }),
         // );
 
+		// Error Middleware
+		app.use(ErrorMiddleware);
+
         server.listen(port, () => {
             Logger.info(`[Server]: API is running at http://localhost:${port}`);
-            Logger.info(
-                `[Server]: Swagger is running at http://localhost:${port}/docs`,
-            );
+            // Logger.info(
+            //     `[Server]: Swagger is running at http://localhost:${port}/docs`,
+            // );
         });
     };
 }

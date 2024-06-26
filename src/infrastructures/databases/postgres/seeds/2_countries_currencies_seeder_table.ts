@@ -3107,7 +3107,7 @@ export async function seed(knex: Knex): Promise<void> {
 	// update system user created_by
 	await knex(EnumDatabaseTables.USER_DETAILS_TABLE)
         .update({
-            country_id: 35,
+            contact_country_id: 35,
         })
         .where('id',  '73edee95-50e9-4693-8060-6cdceacd359e');
 

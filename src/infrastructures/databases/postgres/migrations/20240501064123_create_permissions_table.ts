@@ -16,21 +16,21 @@ export async function up(knex: Knex): Promise<void> {
 			table.text('description').nullable().comment('permission description');
 
 			// Standard Base DB Fields
-            table.boolean('activated').defaultTo(true);
-            table.timestamp('created_at').defaultTo(knex.fn.now());
-            table.timestamp('updated_at').defaultTo(knex.fn.now());
-            table
-                .uuid('created_by_id')
-				.nullable()
-                .unsigned()
-                .references('id')
-                .inTable(EnumDatabaseTables.USERS_TABLE);
-            table
-                .uuid('updated_by_id')
-				.nullable()
-                .unsigned()
-                .references('id')
-                .inTable(EnumDatabaseTables.USERS_TABLE);
+            // table.boolean('activated').defaultTo(true);
+            // table.timestamp('created_at').defaultTo(knex.fn.now());
+            // table.timestamp('updated_at').defaultTo(knex.fn.now());
+            // table
+            //     .uuid('created_by_id')
+			// 	.nullable()
+            //     .unsigned()
+            //     .references('id')
+            //     .inTable(EnumDatabaseTables.USERS_TABLE);
+            // table
+            //     .uuid('updated_by_id')
+			// 	.nullable()
+            //     .unsigned()
+            //     .references('id')
+            //     .inTable(EnumDatabaseTables.USERS_TABLE);
         });
     }
 }

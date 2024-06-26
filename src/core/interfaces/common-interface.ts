@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { TModel, TModelId } from '../types';
 import { IErrorResponse } from './error-response.interface';
+import { IUser } from '../../domains/users';
 
 export interface IQueryOptions {
     per_page?: number;
@@ -67,4 +68,8 @@ export interface IAPIHandlerResponse {
 
 export interface IAPIHandler {
     (req: Request, res: Response): Promise<IAPIHandlerResponse | IErrorResponse>;
+}
+
+export interface IJWTPayload {
+    user: IUser;
 }

@@ -20,7 +20,9 @@ export abstract class BaseController<
     R extends BaseRepository<T>,
 > implements IBaseController<T>
 {
-    constructor(protected useCase: BaseUseCase<T, R>) {}
+    constructor(
+		protected useCase: BaseUseCase<T, R>
+	) {}
 
     get: IAPIHandler = async (
         req: Request,

@@ -2,11 +2,10 @@
 
 import { inject, injectable } from "inversify";
 import { BaseUseCase } from "../../../core/application/base.usecase";
-import { ICountry } from "../../../domains/countries/country";
-import { ICountryUseCase } from "../../../domains/countries/country/country-usecase.interface";
-import { CountryRepository } from "../../../infrastructures/repositories/countries/country/country.repo";
 import { INTERCEPTOR_TOKENS_TYPES } from "../../../core/types/interceptors.types";
-import { IQueryOptions } from "../../../core/interfaces/common-interface";
+import { IPagination, IQueryOptions } from "../../../core/interfaces/common-interface";
+import { ICountry, ICountryUseCase } from "../../../domains/countries";
+import { CountryRepository } from "../../../infrastructures/repositories/countries";
 
 @injectable()
 class CountryUseCase extends BaseUseCase<ICountry, CountryRepository> implements ICountryUseCase {
@@ -16,6 +15,34 @@ class CountryUseCase extends BaseUseCase<ICountry, CountryRepository> implements
         repository: CountryRepository,
     ) {
         super(repository);
+    }
+
+	// Override
+	getAll = async (query: IQueryOptions): Promise<ICountry[]> => {
+		return await this.repository.getAll({
+			...query,
+			include: {
+				currency: true
+			}
+		});
+    }
+
+	getBy = async (query: IQueryOptions): Promise<{ data: ICountry[], meta: IPagination }> => {
+        return await this.repository.getBy({
+			...query,
+			include: {
+				currency: true
+			}
+		});
+    }
+
+    getByID = async (id: string | bigint, query: IQueryOptions): Promise<ICountry> => {
+		return await this.repository.getByID(id, {
+			...query,
+			include: {
+				currency: true
+			}
+		});
     }
 
 	/**

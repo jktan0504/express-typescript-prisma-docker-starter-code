@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { container } from '../../../../../core/locators/dependencies-injector';
-import { CurrencyController } from '../../../controllers/countries/currency/currency.controller';
 import { INTERCEPTOR_TOKENS_TYPES } from '../../../../../core/types/interceptors.types';
+import { CurrencyController } from '../../../controllers/countries';
 
 export const currencyRoutes: Router = Router();
 

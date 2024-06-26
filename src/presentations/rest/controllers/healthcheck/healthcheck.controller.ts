@@ -7,7 +7,6 @@ import { HealthStatus } from '../../../../domains/healthcheck';
 import { INTERCEPTOR_TOKENS_TYPES } from '../../../../core/types/interceptors.types';
 
 @injectable()
-
 export class HealthCheckController {
     private useCase: IHeathcheckUsecase;
 

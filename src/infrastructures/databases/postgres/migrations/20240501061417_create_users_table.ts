@@ -15,7 +15,10 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('password').nullable().comment('encrypted hash password');
 			table.string('device_id').nullable().comment('user device id');
 			table.boolean('is_email_verified').defaultTo(false).comment('email verification');
-			table.date('email_verified_at').nullable().comment('email verification at');
+			table.timestamp('email_verified_at').nullable().comment('email verification at');
+			table.boolean('is_phone_verified').defaultTo(false).comment('phone verification');
+			table.timestamp('phone_verified_at').nullable().comment('phone verification at');
+			table.timestamp('last_login_at').nullable().comment('last login at');
 			// NOTE: Will add when user table is created
 			// table
 			// 	.bigInteger('user_detail_id')
