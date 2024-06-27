@@ -24,9 +24,9 @@ import { IFileUploadUseCase, IMediaFileRepository, IMediaFileUseCase, IMediaRepo
 import { MediaFileRepository, MediaRepository } from "../../infrastructures/repositories/medias";
 import { FileUploadUseCase, MediaFileUseCase, MediaUseCase } from "../../applications/medias";
 import { MediaController, MediaFileController } from "../../presentations/rest/controllers/medias";
-import { ICompanyCategoryRepository, ICompanyCategoryUseCase, ICompanyRepository, ICompanyUseCase } from "../../domains/companies";
-import { CompanyCategoryRepository, CompanyRepository } from "../../infrastructures/repositories/companies";
-import { CompanyCategoryUseCase, CompanyUseCase } from "../../applications/companies";
+import { ICompanyCategoryRepository, ICompanyCategoryUseCase, ICompanyRepository, ICompanyUseCase, IMerchantRepository, IMerchantUseCase } from "../../domains/companies";
+import { CompanyCategoryRepository, CompanyRepository, MerchantRepository } from "../../infrastructures/repositories/companies";
+import { CompanyCategoryUseCase, CompanyUseCase, MerchantUseCase } from "../../applications/companies";
 import { CompanyCategoryController, CompanyController } from "../../presentations/rest/controllers/companies";
 import { IPermissionRepository, IPermissionUseCase, IRBACRepository, IRBACUseCase, IRoleRepository, IRoleUseCase } from "../../domains/roles";
 import { PermissionRepository, RBACRepository, RoleRepository } from "../../infrastructures/repositories/roles";
@@ -42,6 +42,7 @@ import { ReferralCodeUseCase, UserDetailUseCase, UserSettingUseCase, UserUseCase
 import { ReferralCodeController, UserController, UserDetailController, UserSettingController } from "../../presentations/rest/controllers/users";
 import { INotificationService, NotificationService } from "../services/notification";
 import { FileUploadController } from "../../presentations/rest/controllers/medias/file-upload/file-upload.controller";
+import { MerchantController } from "../../presentations/rest/controllers/companies/merchant/merchant.controller";
 
 /**
  * Initial Container
@@ -91,6 +92,10 @@ container.bind(INTERCEPTOR_TOKENS_TYPES.COMPANY_CATEGORY_CONTROLLER).to(CompanyC
 container.bind<ICompanyRepository>(INTERCEPTOR_TOKENS_TYPES.COMPANY_REPO).to(CompanyRepository)
 container.bind<ICompanyUseCase>(INTERCEPTOR_TOKENS_TYPES.COMPANY_USECASE).to(CompanyUseCase)
 container.bind(INTERCEPTOR_TOKENS_TYPES.COMPANY_CONTROLLER).to(CompanyController);
+// Merchant
+container.bind<IMerchantRepository>(INTERCEPTOR_TOKENS_TYPES.MERCHANT_REPO).to(MerchantRepository)
+container.bind<IMerchantUseCase>(INTERCEPTOR_TOKENS_TYPES.MERCHANT_USECASE).to(MerchantUseCase)
+container.bind(INTERCEPTOR_TOKENS_TYPES.MERCHANT_CONTROLLER).to(MerchantController);
 
 /// RBAC
 // Role

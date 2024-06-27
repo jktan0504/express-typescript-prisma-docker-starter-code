@@ -26,7 +26,7 @@ class BaseUseCase<T extends { id?: string | bigint }, R extends BaseRepository<T
     }
 
     create = async (entity: T): Promise<T> => {
-		if (this.isIDString) {
+		if (this.isIDString && (typeof entity.id === 'undefined' || typeof entity.id === null)) {
 			entity.id = genId();  // Generate a new UUID 
 		}
 		return await this.repository.create(entity);

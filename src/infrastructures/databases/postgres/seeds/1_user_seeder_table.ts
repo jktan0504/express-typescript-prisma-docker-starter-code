@@ -60,7 +60,7 @@ export async function seed(knex: Knex): Promise<void> {
         .returning('id')
         .insert([
             {
-                id: '73edee95-50e9-4693-8060-6cdceacd359e',
+                id: '2322e309-cb50-4cf9-9cff-ee24dd20b63d',
                 nickname: 'SuperAdmin',
 				email: 'admin@ezchat.org',
 				first_name: 'EzChat',

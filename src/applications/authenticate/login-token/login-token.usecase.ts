@@ -51,7 +51,7 @@ class UserLoginTokenUseCase extends BaseUseCase<IUserLoginToken, UserLoginTokenR
 
 	create = async (entity: IUserLoginToken): Promise<IUserLoginToken> => {
 		// id
-		entity.id = genId(); 
+		entity.id = entity.user_id!;
 
 		// token
 		entity.token = await generateRandomBase64Token();

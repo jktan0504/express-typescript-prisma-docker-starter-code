@@ -1,31 +1,30 @@
 
 
 import { BaseEntity } from '../../../core/domain/base.entity';
-import { IMedia } from '../../medias';
-import { ICompanyCategory } from '../company-category/company-category.interface';
-import { ICompany } from './company.interface';
+import { IUser } from '../../users';
+import { ICompany } from '../company';
+import { IMerchant } from './merchant.interface';
 
-class CompanyDomain extends BaseEntity implements ICompany {
-    readonly name: string;
-	readonly registration_number: string;
-	readonly official_contact_number: string;
-	readonly unofficial_contact_number: string;
-	readonly company_category_id: bigint;
-	readonly company_category: ICompanyCategory;
-	readonly logo_id: string;
-	readonly logo: IMedia;
+class MerchantDomain extends BaseEntity implements IMerchant {
+    readonly company_id: string;
+	readonly company: ICompany;
+	readonly user_id: string;
+	readonly user: IUser;
+	readonly credits: number;
+	readonly remark: string;
+	readonly server_superadmin_session_id: string;
 	
-	constructor(name: string, registration_number: string, official_contact_number: string, unofficial_contact_number: string, company_category_id: bigint, company_category: ICompanyCategory, logo_id: string, logo: IMedia) {
+	constructor(company_id: string, company: ICompany, user_id: string, unofficial_contact_number: string, user: IUser, credits: number, remark: string, server_superadmin_session_id: string) {
 		super();
-		this.name = name;
-		this.registration_number = registration_number;
-		this.official_contact_number = official_contact_number;
+		this.company_id = company_id;
+		this.company = company;
+		this.user_id = user_id;
 		this.unofficial_contact_number = unofficial_contact_number;
-		this.company_category_id = company_category_id;
-		this.company_category = company_category;
-		this.logo_id = logo_id;
-		this.logo = logo;
+		this.user = user;
+		this.credits = credits;
+		this.remark = remark;
+		this.server_superadmin_session_id = server_superadmin_session_id;
 	}
 }
 
-export { CompanyDomain };
+export { MerchantDomain };

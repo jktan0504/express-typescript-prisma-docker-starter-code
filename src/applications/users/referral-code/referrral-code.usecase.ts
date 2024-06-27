@@ -47,9 +47,8 @@ class ReferralCodeUseCase extends BaseUseCase<IReferralCode, ReferralCodeReposit
     }
 
 	create = async (entity: IReferralCode): Promise<IReferralCode> => {
-		entity.id = genId(); 
 		if (typeof entity.code === 'undefined' || typeof entity.code === null) {
-			entity.code = generateRandomCode(8)
+			entity.code = generateRandomCode(6)
 		}
 		return await this.repository.create(entity);
     }

@@ -43,11 +43,10 @@ class AuthUseCase implements IAuthUseCase {
 
 			if (res && res.data && res.data.length > 0) {
 
-				const userRes = await userUseCase.getBy({
-					user_detail_id: res.data[0].id,
+				const userRes = await userUseCase.getByID(res.data[0].id!, {
 					include: { user_details: true, role: true }
 				})
-				userData = userRes && userRes.data && userRes.data[0]
+				userData = userRes && userRes
 				const { password, ...filteredUserData } = userData
 				if (userData && (await compareBcrypt(reqBody.password, password as string))) {
 					isLoginSuccess = true
@@ -226,15 +225,13 @@ class AuthUseCase implements IAuthUseCase {
 			}
 
 			// update user data
-			const currentUser = await userUseCase.getBy({
-				user_detail_id: userDetails && userDetails.data && userDetails.data[0].id
-			})
+			const currentUser = await userUseCase.getByID(userDetails && userDetails.data && userDetails.data[0].id!, {})
 
-			if (!currentUser || !currentUser.data || currentUser.data.length < 1) {
+			if (!currentUser) {
 				throw new Error('user not found')
 			}
 
-			const updatedUser = await userUseCase.updateByID(currentUser && currentUser.data && currentUser.data[0].id!, {
+			const updatedUser = await userUseCase.updateByID(currentUser && currentUser.id!, {
 				is_phone_verified: true
 			})
 
